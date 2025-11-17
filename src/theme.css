@@ -1,0 +1,108 @@
+/* ============================================
+   🌈 GLOBAL BASE (fallback values)
+   ============================================ */
+:root {
+  --primary: #6366F1;
+  --primary-dark: #4F46E5;
+  --secondary: #0a0c15;
+  --bg: #F3F4F6;
+  --sidebar: #3f81dd;
+  --card: #FFFFFF;
+  --text: #0a47cb;
+  --muted: #0c0d0f;
+  --border: #E5E7EB;
+}
+
+/* transitions */
+* {
+  transition: background-color 180ms ease,
+              color 180ms ease,
+              border-color 180ms ease;
+}
+
+
+/* ============================================
+   🟣 THEME A — MODERN PURPLE (Default)
+   Clean, professional, SaaS-style
+   ============================================ */
+.theme-purple {
+  --primary: #95d5b2;       /* Indigo 500 */
+  --primary-dark: #e1d1e2;  /* Indigo 600 */
+  --secondary: #95d5b2;     /* Indigo 300 */
+  --bg: #b7e4c7;            /* Gray 100 */
+  --sidebar: #95d5b2;       /* Slate 900 */
+  --card: #629378;          /* White */
+  --text: #08090a;          /* Slate 900 */
+  --muted: #9badcf;         /* Gray 500 */
+  --border: #364c78;        /* Gray 200 */
+}
+
+
+/* ============================================
+   🔵 THEME B — CLEAN BLUE (Shopify/Stripe vibe)
+   Professional, calm, business-friendly
+   ============================================ */
+.theme-blue {
+  --primary: #2196f3;        /* Blue 500 */
+  --primary-dark: #2563EB;   /* Blue 600 */
+  --secondary: #2196f3;      /* Blue 300 */
+  --bg: #42a5f5;             /* Gray 50 */
+  --sidebar: #2196f3;        /* Slate 800 */
+  --card: #9cc9ee;           /* White */
+  --text: #0F172A;           /* Slate 900 */
+  --muted: #64748B;          /* Slate 500 */
+  --border: #E2E8F0;         /* Gray 200 */
+}
+
+/* ============================================
+   ☕ THEME E — COFFEE SHOP
+   ============================================ */
+.theme-coffee {
+  --primary: #f38333;      /* Coffee brown */
+  --primary-dark: #f38333; /* Dark roast */
+  --secondary: #d4a574;    /* Cream caramel */
+  --bg: #f9c88c;           /* Light cream */
+  --sidebar: #f38333;      /* Brown sidebar */
+  --card: #d4b086;         /* Soft cream card */
+  --text: #3b2f2f;         /* Dark brown text */
+  --muted: #8c7a6b;        /* Muted beige */
+  --border: #e1d4c3;       /* Soft border */
+}
+
+
+
+/* ============================================
+   ⚡ THEME C — NEON DARK (Discord/Hacker Style)
+   High contrast, glowing accents, clean dark
+   ============================================ */
+.theme-neon {
+  --primary: #abc4ff;        /* Purple glow */
+  --primary-dark: #7C3AED;   /* Deep purple glow */
+  --secondary: #abc4ff;      /* Neon cyan */
+  --bg: #b6ccfe;             /* Deep space */
+  --sidebar: #abc4ff;        /* Dark but readable */
+  --card: #7f96cd;           /* Dark panels */
+  --text: #0e0f0f;           /* Pure white */
+  --muted: #b53939;          /* Soft gray */
+  --border: #17171c;         /* Clean dark border */
+}
+/* ============================================
+   🟡 THEME G — KHMER GOLD / RED
+   ============================================ */
+.theme-khmer {
+  --primary: #d4af37;      /* Gold */
+  --primary-dark: #b5892e;
+  --secondary: #c92a2a;    /* Red accent */
+  --bg: #e3c76e;           /* Soft gold background */
+  --sidebar: #d4af37;      /* Gold sidebar */
+  --card: #ecd896;         /* White card */
+  --text: #4a3f1f;         /* Dark gold/brown text */
+  --muted: #130d06;        /* Muted brown */
+  --border: #e5d3a4;       /* Light gold border */
+}
+
+
+/* Glow borders for dark mode cards */
+.theme-neon .card-border {
+  border-color: rgba(255, 255, 255, 0.08);
+}
