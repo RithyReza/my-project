@@ -8,20 +8,26 @@ export default function StaffAdd() {
   const handleAdd = async () => {
     if (!name || !password) return alert("Fill all fields");
 
-    const res = await fetch(`${API_URL}/api/staff/add`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, password }),
-    });
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/staff/add`, {
 
-    const data = await res.json();
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, password }),
+      });
 
-    if (data.success) {
+      const data = await res.json();
+
+      if (!data.success) {
+        return alert("Failed: " + (data.message || data.error));
+      }
+
       alert("Staff created!");
       setName("");
       setPassword("");
-    } else {
-      alert("Failed: " + (data.message || data.error));
+    } catch (err) {
+      console.error("Staff add error:", err);
+      alert("Cannot connect to server");
     }
   };
 

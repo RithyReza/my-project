@@ -6,7 +6,7 @@ export default function StaffManager() {
   const [password, setPassword] = useState("");
 
   const loadStaff = async () => {
-    const res = await fetch("http://localhost:5000/api/staff/list");
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/staff/list`);
     const data = await res.json();
     setStaff(data.staff || []);
   };

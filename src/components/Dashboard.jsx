@@ -9,7 +9,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
 import { money } from "../utils/money";
+import { API_URL } from "../services/api";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -48,12 +50,10 @@ export default function Dashboard() {
     loadStats();
   }, []);
 
-  if (loading) {
-    return <div className="p-3">Loading dashboard...</div>;
-  }
+  if (loading) return <div className="p-3">Loading dashboard...</div>;
 
   const chartData =
-    stats.weeklySales && stats.weeklySales.length
+    stats.weeklySales.length > 0
       ? stats.weeklySales
       : [
           { day: "Sun", sales: 0 },
@@ -77,24 +77,50 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* TOP CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <div className="p-4 rounded-lg shadow" style={{ background: "var(--card)", color: "var(--text)", borderLeft: "4px solid var(--primary)" }}>
+        <div
+          className="p-4 rounded-lg shadow"
+          style={{
+            background: "var(--card)",
+            color: "var(--text)",
+            borderLeft: "4px solid var(--primary)",
+          }}
+        >
           <div className="text-sm text-black">Total Sales</div>
           <div className="text-2xl font-bold">{money(stats.totalSales)}</div>
         </div>
 
-        <div className="p-4 rounded-lg shadow" style={{ background: "var(--card)", color: "var(--text)", borderLeft: "4px solid var(--secondary)" }}>
+        <div
+          className="p-4 rounded-lg shadow"
+          style={{
+            background: "var(--card)",
+            color: "var(--text)",
+            borderLeft: "4px solid var(--secondary)",
+          }}
+        >
           <div className="text-sm text-black">Orders</div>
           <div className="text-2xl font-bold">{stats.totalOrders}</div>
         </div>
 
-        <div className="p-4 rounded-lg shadow" style={{ background: "var(--card)", color: "var(--text)", borderLeft: "4px solid var(--primary-dark)" }}>
+        <div
+          className="p-4 rounded-lg shadow"
+          style={{
+            background: "var(--card)",
+            color: "var(--text)",
+            borderLeft: "4px solid var(--primary-dark)",
+          }}
+        >
           <div className="text-sm text-black">Products Sold</div>
           <div className="text-2xl font-bold">{stats.totalProductsSold}</div>
         </div>
       </div>
 
-      <div className="p-4 rounded-lg shadow" style={{ background: "var(--card)", color: "var(--text)" }}>
+      {/* CHART */}
+      <div
+        className="p-4 rounded-lg shadow"
+        style={{ background: "var(--card)", color: "var(--text)" }}
+      >
         <h3 className="font-semibold mb-3">Weekly Sales (៛)</h3>
 
         <ResponsiveContainer width="100%" height={180}>
@@ -103,7 +129,12 @@ export default function Dashboard() {
             <XAxis dataKey="day" />
             <YAxis />
             <Tooltip formatter={(value) => money(value)} />
-            <Line dataKey="sales" stroke="var(--primary)" strokeWidth={3} dot={{ r: 4 }} />
+            <Line
+              dataKey="sales"
+              stroke="var(--primary)"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
