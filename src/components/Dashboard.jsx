@@ -24,7 +24,7 @@ export default function Dashboard() {
   useEffect(() => {
     const loadStats = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/analytics");
+        const res = await fetch(`${API_URL}/api/analytics`);
         const data = await res.json();
 
         if (data.success) {
