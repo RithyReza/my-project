@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../services/api";
 
 export default function StaffList() {
   const [staff, setStaff] = useState([]);
 
   const fetchStaff = async () => {
-    const res = await fetch("http://localhost:5000/api/staff/list");
-    const data = await res.json();
-    if (data.success) setStaff(data.staff);
+    try {
+      const res = await fetch(`${API_URL}/api/staff/list`);
+      const data = await res.json();
+
+      if (data.success) {
+        setStaff(data.staff);
+      }
+    } catch (err) {
+      console.error("Staff list error:", err);
+    }
   };
 
   useEffect(() => {
@@ -16,7 +24,7 @@ export default function StaffList() {
   const deleteStaff = async (id) => {
     if (!confirm("Delete staff?")) return;
 
-    await fetch(`http://localhost:5000/api/staff/delete/${id}`, {
+    await fetch(`${API_URL}/api/staff/delete/${id}`, {
       method: "DELETE",
     });
 

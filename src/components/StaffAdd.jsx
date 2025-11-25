@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../services/api";
 
 export default function StaffAdd() {
   const [name, setName] = useState("");
@@ -7,19 +8,20 @@ export default function StaffAdd() {
   const handleAdd = async () => {
     if (!name || !password) return alert("Fill all fields");
 
-    const res = await fetch("http://localhost:5000/api/staff/add", {
+    const res = await fetch(`${API_URL}/api/staff/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, password }),
     });
 
     const data = await res.json();
+
     if (data.success) {
       alert("Staff created!");
       setName("");
       setPassword("");
     } else {
-      alert("Failed: " + data.error);
+      alert("Failed: " + (data.message || data.error));
     }
   };
 
@@ -36,6 +38,7 @@ export default function StaffAdd() {
         />
 
         <input
+          type="password"
           className="border rounded p-2 w-full mb-3"
           placeholder="Password"
           value={password}
