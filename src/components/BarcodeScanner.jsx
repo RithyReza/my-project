@@ -3,41 +3,43 @@ import Quagga from "quagga";
 
 export default function BarcodeScanner({ onDetected, onClose }) {
   useEffect(() => {
-    Quagga.init({
-      inputStream: {
-        type: "LiveStream",
-        constraints: { facingMode: "environment" },
-        target: document.querySelector("#scanner")
+    Quagga.init(
+      {
+        inputStream: {
+          type: "LiveStream",
+          constraints: { facingMode: "environment" },
+          target: document.querySelector("#scanner"),
+        },
+        decoder: { readers: ["ean_reader", "code_128_reader", "upc_reader"] },
       },
-      decoder: {
-        readers: ["ean_reader", "code_128_reader", "upc_reader"]
-      },
-      locate: true
-    }, err => {
-      if (err) {
-        console.error(err);
-        return;
+      (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        Quagga.start();
       }
-      Quagga.start();
-    });
+    );
 
-    let lastScan = 0;
+    let cooldown = false;
 
-    Quagga.onDetected(data => {
-      const now = Date.now();
+    Quagga.onDetected((data) => {
+      if (cooldown) return; // ✅ ignore duplicate frames
+
+      cooldown = true;
+
       const code = data.codeResult.code;
-
-      // ✅ prevent double scanning too fast
-      if (now - lastScan < 1000) return;
-      lastScan = now;
-
       onDetected(code);
-      // ✅ DO NOT STOP SCANNING
-      // Quagga.stop();
+
+      setTimeout(() => {
+        cooldown = false;   // ✅ allow scanning again after 1s
+      }, 1000);
     });
 
     return () => {
-      try { Quagga.stop(); } catch (e) {}
+      try {
+        Quagga.stop();
+      } catch (e) {}
       Quagga.offDetected();
     };
   }, []);
@@ -47,6 +49,7 @@ export default function BarcodeScanner({ onDetected, onClose }) {
       <div className="bg-white p-4 rounded shadow">
         <h3 className="text-lg font-semibold mb-2">Scan barcode</h3>
         <div id="scanner" style={{ width: 320, height: 240 }} />
+
         <div className="mt-3 flex gap-2">
           <button
             onClick={onClose}
