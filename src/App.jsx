@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 
+// Login
 import Login from "./pages/Login";
 
-// Mobile pages
+// Mobile pages (NO LAYOUT)
 import MobileUpload from "./pages/MobileUpload";
 import MobileOrderScan from "./pages/MobileOrderScan";
 
@@ -21,6 +22,7 @@ import Footer from "./components/Footer";
 
 import { useAuth } from "./context/AuthContext";
 
+// ✅ LAYOUT ONLY FOR DESKTOP
 function Layout() {
   const { user } = useAuth();
 
@@ -58,17 +60,21 @@ function Layout() {
   );
 }
 
+// ✅ APP ROOT
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
 
-          {/* ✅ Standalone mobile pages */}
+          {/* ✅ Login */}
+          <Route path="/login" element={<Login />} />
+
+          {/* ✅ Standalone mobile pages (NO LAYOUT) */}
           <Route path="/mobile-upload" element={<MobileUpload />} />
           <Route path="/mobile-order-scan" element={<MobileOrderScan />} />
 
-          {/* ✅ Everything else uses layout */}
+          {/* ✅ Desktop layout */}
           <Route path="/*" element={<Layout />} />
 
         </Routes>
