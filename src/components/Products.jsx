@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { money } from "../utils/money";
+import { API_URL } from "../services/api";
 
 import {
   getProducts,
@@ -23,7 +24,6 @@ export default function Products() {
     img: null,
   });
 
-  // Load products
   const loadProducts = async () => {
     try {
       const data = await getProducts();
@@ -106,14 +106,15 @@ export default function Products() {
             className="p-4 rounded shadow border"
             style={{ background: "var(--card)" }}
           >
+
+            {/* ✅ FIXED IMAGE URL */}
             <img
-              src={`http://localhost:5000${p.img}`}
+              src={`${API_URL}${p.img}`}
               className="w-full h-40 object-cover rounded"
             />
 
             <h2 className="font-semibold mt-3">{p.name}</h2>
 
-            {/* PRICE FORMATTED */}
             <p className="text-lg font-bold">{money(p.price)}</p>
 
             <p className="opacity-60">{p.category}</p>
@@ -125,17 +126,12 @@ export default function Products() {
                     id: p._id,
                     name: p.name,
                     price: p.price,
-                    img: p.img,
+                    img: `${API_URL}${p.img}`, // ✅ FIX
                     qty: 1,
                   })
                 }
-                className="px-4 py-2 bg-green-600 text-white rounded 
-                            transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+                className="px-4 py-2 bg-green-600 text-white rounded"
               >
-
                 Add
               </button>
 
@@ -146,11 +142,7 @@ export default function Products() {
                     loadProducts();
                   }
                 }}
-                className="px-2 py-2 bg-transparent border text-white rounded 
-                            transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+                className="px-2 py-2 bg-transparent border text-white rounded"
               >
                 Delete
               </button>
@@ -158,10 +150,7 @@ export default function Products() {
 
             <button
               onClick={() => openEdit(p)}
-              className="mt-2 w-full bg-orange-500 text-white px-3 py-1 rounded transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+              className="mt-2 w-full bg-orange-500 text-white px-3 py-1 rounded"
             >
               Edit
             </button>
@@ -178,9 +167,7 @@ export default function Products() {
             <input
               className="border p-2 w-full mb-2"
               value={editData.name}
-              onChange={(e) =>
-                setEditData({ ...editData, name: e.target.value })
-              }
+              onChange={(e) => setEditData({ ...editData, name: e.target.value })}
             />
 
             <input
@@ -216,11 +203,7 @@ export default function Products() {
             <div className="flex justify-between">
               <button
                 onClick={() => setEditing(null)}
-                className="px-4 py-2 bg-green-600 text-white rounded 
-                            transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+                className="px-4 py-2 bg-green-600 text-white rounded"
               >
                 Cancel
               </button>

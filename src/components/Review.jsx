@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { money } from "../utils/money";
+import { API_URL } from "../services/api";
 
 export default function Review() {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -10,7 +11,7 @@ export default function Review() {
 
   // Load staff options
   useEffect(() => {
-    fetch("http://localhost:5000/api/staff/list")
+    fetch(`${API_URL}/api/staff/list`)
       .then((r) => r.json())
       .then((d) => setStaffOptions(d.staff || []));
   }, []);
@@ -21,7 +22,7 @@ export default function Review() {
     if (date) params.append("date", date);
     if (staff) params.append("staff", staff);
 
-    const res = await fetch("http://localhost:5000/api/orders?" + params.toString());
+    const res = await fetch(`${API_URL}/api/orders?` + params.toString());
     const data = await res.json();
 
     if (data.success) setOrders(data.orders || []);
@@ -37,9 +38,7 @@ export default function Review() {
     <div className="p-5">
       <h1 className="text-3xl font-bold mb-6">📊 Staff Sales Review</h1>
 
-      {/* FILTER CONTROLS */}
       <div className="flex gap-3 mb-5">
-        {/* DATE FILTER */}
         <input
           type="date"
           value={date}
@@ -47,7 +46,6 @@ export default function Review() {
           className="border p-2 rounded"
         />
 
-        {/* STAFF FILTER */}
         <select
           value={staff}
           onChange={(e) => setStaff(e.target.value)}
@@ -63,16 +61,12 @@ export default function Review() {
 
         <button
           onClick={loadOrders}
-          className="px-4 py-2 bg-blue-600 text-white rounded transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+          className="px-4 py-2 bg-blue-600 text-white rounded"
         >
           Reload
         </button>
       </div>
 
-      {/* TABLE */}
       <div className="bg-white rounded shadow overflow-hidden">
         <table className="w-full border-collapse">
           <thead className="bg-gray-200 border-b">
@@ -89,7 +83,6 @@ export default function Review() {
           <tbody>
             {orders.map((o) => (
               <>
-                {/* SUMMARY ROW */}
                 <tr key={o._id} className="hover:bg-gray-50 border-b">
                   <td className="p-3">{o.invoiceId}</td>
                   <td className="p-3">{o.staffName}</td>
@@ -98,10 +91,7 @@ export default function Review() {
                   <td className="p-3">{new Date(o.date).toLocaleString()}</td>
                   <td className="p-3 text-center">
                     <button
-                      className="px-3 py-1 bg-blue-500 text-white rounded transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90"
+                      className="px-3 py-1 bg-blue-500 text-white rounded"
                       onClick={() =>
                         setOpenRow(openRow === o._id ? null : o._id)
                       }
@@ -111,7 +101,6 @@ export default function Review() {
                   </td>
                 </tr>
 
-                {/* DETAILS ROW */}
                 {openRow === o._id && (
                   <tr>
                     <td colSpan={6} className="bg-gray-100 p-4">
@@ -122,7 +111,7 @@ export default function Review() {
                           <div key={i} className="p-3 bg-white rounded shadow border">
                             {item.img && (
                               <img
-                                src={`http://localhost:5000${item.img}`}
+                                src={`${API_URL}${item.img}`}
                                 className="w-full h-28 object-cover rounded"
                               />
                             )}
@@ -139,7 +128,6 @@ export default function Review() {
 
                       <hr className="my-4" />
 
-                      {/* PAYMENT SUMMARY */}
                       <div className="text-sm">
                         <p>💰 <strong>Total:</strong> {money(o.total)}</p>
                         <p>🪙 <strong>Cash Given:</strong> {money(o.cashGiven)}</p>
@@ -154,7 +142,6 @@ export default function Review() {
         </table>
       </div>
 
-      {/* OVERALL TOTAL */}
       <div className="mt-5 text-xl font-bold">
         🧮 Daily Total: <span className="text-green-700">{money(overall)}</span>
       </div>
