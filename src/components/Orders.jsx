@@ -16,21 +16,22 @@ export default function Orders() {
   const change = Number(cashGiven || 0) - total;
 
   // ✅ Auto receive scanned items from phone
-  useEffect(() => {
-    socket.on("cart:add", (product) => {
-      addToCart({
-        id: product._id,
-        name: product.name,
-        price: product.price,
-        img: product.img,
-        qty: 1,
-      });
-
-      setShowQR(false);
+ useEffect(() => {
+  socket.on("order:add", (product) => {
+    addToCart({
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      img: product.img,
+      qty: 1,
     });
 
-    return () => socket.off("cart:add");
-  }, []);
+    setShowQR(false);
+  });
+
+  return () => socket.off("order:add");
+}, []);
+
 
   // ✅ SAVE ORDER TO BACKEND (RENDER)
   const submitOrder = async () => {

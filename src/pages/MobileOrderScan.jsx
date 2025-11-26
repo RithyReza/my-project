@@ -12,7 +12,7 @@ export default function MobileOrderScan() {
 
     sound.play();   // ✅ Works on phone + render
 
-    await fetch(`${API_URL}/api/mobile/add-to-cart`, {
+    await fetch(`${API_URL}/api/mobile/add-to-order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ barcode: code }),
