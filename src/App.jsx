@@ -21,7 +21,7 @@ import Footer from "./components/Footer";
 
 // Mobile Upload Page
 import MobileUpload from "./pages/MobileUpload";
-
+import MobileOrderScan from "./pages/MobileOrderScan";
 import { useAuth } from "./context/AuthContext";
 
 // ======================= LAYOUT ===========================
@@ -76,7 +76,7 @@ export default function App() {
 
           {/* Mobile Upload (phone scanner) */}
           <Route path="/mobile-upload" element={<MobileUpload />} />
-
+          <Route path="/mobile-order-scan" element={<MobileOrderScan />} />
           {/* Everything else uses layout */}
           <Route path="/*" element={<Layout />} />
         </Routes>
