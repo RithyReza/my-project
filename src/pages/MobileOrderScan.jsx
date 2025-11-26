@@ -1,60 +1,49 @@
-// src/pages/MobileOrderScan.jsx
 import { useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { API_URL } from "../services/api";
 
 export default function MobileOrderScan() {
-  const [locked, setLocked] = useState(false);
+  const [scanned, setScanned] = useState(false);
 
   const beep = () => {
     const audio = new Audio(
-      "https://www.soundjay.com/buttons/sounds/beep-07.mp3"
+      "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
     );
     audio.play();
   };
 
   const handleDetected = async (result) => {
-    if (!result || locked) return;
+    if (!result || scanned) return;
 
-    setLocked(true);
-
-    const barcode = result.text;
+    setScanned(true);
     beep();
+
+    const code = result?.text;
 
     await fetch(`${API_URL}/api/mobile/add-to-cart`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ barcode }),
+      body: JSON.stringify({ barcode: code }),
     });
 
-    // allow next scan after 1 sec
-    setTimeout(() => setLocked(false), 1000);
+    alert("✅ Sent to POS!");
+    history.back();
   };
 
   return (
-    <div className="w-full h-screen bg-black text-white flex flex-col items-center justify-center relative">
+    <div className="w-full h-screen bg-black flex items-center justify-center relative">
 
-      {/* Scanner */}
-      <div className="w-full h-full">
-        <QrReader
-          onResult={handleDetected}
-          constraints={{ facingMode: "environment" }}
-          containerStyle={{ width: "100%", height: "100%" }}
-          videoContainerStyle={{ width: "100%", height: "100%" }}
-        />
-      </div>
+      <QrReader
+        onResult={handleDetected}
+        constraints={{ facingMode: "environment" }}
+        containerStyle={{ width: "100vw", height: "100vh" }}
+      />
 
-      {/* Scan Frame */}
-      <div className="absolute border-4 border-green-400 w-64 h-64 rounded-lg pointer-events-none"></div>
+      <div className="absolute border-4 border-white/70 w-64 h-64 rounded pointer-events-none"></div>
 
-      <p className="absolute bottom-10 text-lg opacity-80">
-        Scan product barcode…
-      </p>
-
-      {/* Close */}
       <button
-        onClick={() => window.close()}
-        className="absolute top-5 right-5 bg-red-600 px-4 py-2 rounded text-white"
+        onClick={() => history.back()}
+        className="absolute top-5 right-5 bg-red-600 text-white px-4 py-2 rounded"
       >
         Close
       </button>
