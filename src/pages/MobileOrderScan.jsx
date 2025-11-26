@@ -1,16 +1,16 @@
+import { useState } from "react";
 import BarcodeScanner from "../components/BarcodeScanner";
 import { API_URL } from "../services/api";
-import { useState } from "react";
-import beep from "../assets/beep.mp3";
 
 export default function MobileOrderScan() {
   const [scanned, setScanned] = useState(false);
-  const sound = new Audio(beep);
+  const sound = new Audio("/beep.mp3");   // ✅ PUBLIC FILE
 
   const onDetected = async (code) => {
     if (scanned) return;
     setScanned(true);
-    sound.play();
+
+    sound.play();   // ✅ Works on phone + render
 
     await fetch(`${API_URL}/api/mobile/add-to-cart`, {
       method: "POST",
