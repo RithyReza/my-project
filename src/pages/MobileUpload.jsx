@@ -1,5 +1,6 @@
 import { useState } from "react";
 import BarcodeScanner from "../components/BarcodeScanner";
+import { API_URL } from "../services/api";
 
 export default function MobileUpload() {
   const [barcode, setBarcode] = useState("");
@@ -28,16 +29,14 @@ export default function MobileUpload() {
     form.append("barcode", barcode);
     if (img) form.append("img", img);
 
-    const res = await fetch("http://localhost:5000/api/products/add", {
+    // ✅ USE HOSTED BACKEND
+    const res = await fetch(`${API_URL}/api/products/add`, {
       method: "POST",
       body: form,
     });
 
     const data = await res.json();
 
-    // =====================================================
-    // 🚨 DUPLICATE BARCODE DETECTED (same logic as desktop)
-    // =====================================================
     if (data.duplicate) {
       const exists = data.product;
 
@@ -51,9 +50,6 @@ export default function MobileUpload() {
       return;
     }
 
-    // ============================
-    // SUCCESS
-    // ============================
     if (data.success) {
       alert("Uploaded ✔");
 
@@ -70,10 +66,8 @@ export default function MobileUpload() {
 
   return (
     <div className="p-4">
-
       <h1 className="text-2xl font-bold mb-3">📱 Mobile Product Upload</h1>
 
-      {/* Scan Button */}
       <button
         onClick={() => setScanning(true)}
         className="bg-blue-600 text-white px-4 py-2 rounded mb-3"
@@ -83,7 +77,6 @@ export default function MobileUpload() {
 
       {message && <p className="text-green-700 mb-2">{message}</p>}
 
-      {/* SCANNER MODAL */}
       {scanning && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
           <div className="bg-white p-3 rounded w-80 text-center">
@@ -104,7 +97,6 @@ export default function MobileUpload() {
         </div>
       )}
 
-      {/* INPUT FIELDS */}
       <div className="mb-3">
         <label>Barcode</label>
         <input
@@ -156,7 +148,6 @@ export default function MobileUpload() {
         />
       </div>
 
-      {/* SUBMIT */}
       <button
         onClick={handleUpload}
         className="bg-green-600 text-white px-4 py-2 rounded w-full"
