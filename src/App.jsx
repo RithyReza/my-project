@@ -1,30 +1,26 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 
-// Pages
 import Login from "./pages/Login";
 
-// STAFF pages
+// Mobile pages
+import MobileUpload from "./pages/MobileUpload";
+import MobileOrderScan from "./pages/MobileOrderScan";
+
+// Layout pages
 import Dashboard from "./components/Dashboard";
 import Products from "./components/Products";
 import Orders from "./components/Orders";
 import Upload from "./components/Upload";
-
-// ADMIN pages
 import Review from "./components/Review";
 import StaffManager from "./pages/StaffManager";
 
-// Shared UI
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
 
-// Mobile Upload Page
-import MobileUpload from "./pages/MobileUpload";
-import MobileOrderScan from "./pages/MobileOrderScan";
 import { useAuth } from "./context/AuthContext";
 
-// ======================= LAYOUT ===========================
 function Layout() {
   const { user } = useAuth();
 
@@ -37,10 +33,8 @@ function Layout() {
 
         <div className="flex-1 overflow-y-auto p-4">
           <Routes>
-            {/* Everyone sees Dashboard */}
             <Route path="/" element={<Dashboard />} />
 
-            {/* ================= STAFF ONLY ================= */}
             {user?.role === "staff" && (
               <>
                 <Route path="/products" element={<Products />} />
@@ -49,7 +43,6 @@ function Layout() {
               </>
             )}
 
-            {/* ================= ADMIN ONLY ================= */}
             {user?.role === "admin" && (
               <>
                 <Route path="/review" element={<Review />} />
@@ -65,20 +58,19 @@ function Layout() {
   );
 }
 
-// ======================= APP ROOT ===========================
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Login */}
-          <Route path="/login" element={<Login />} />
 
-          {/* Mobile Upload (phone scanner) */}
+          {/* ✅ Standalone mobile pages */}
           <Route path="/mobile-upload" element={<MobileUpload />} />
           <Route path="/mobile-order-scan" element={<MobileOrderScan />} />
-          {/* Everything else uses layout */}
+
+          {/* ✅ Everything else uses layout */}
           <Route path="/*" element={<Layout />} />
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>
