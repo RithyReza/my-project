@@ -1,41 +1,73 @@
-import { useEffect } from "react";
-import Quagga from "quagga";
+import { useEffect, useRef } from "react";
 
 export default function BarcodeScanner({ onDetected, onClose }) {
+  const videoRef = useRef(null);
+  const canvas = document.createElement("canvas");
+  const beep = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+
   useEffect(() => {
-    Quagga.init({
-      inputStream: {
-        type: "LiveStream",
-        constraints: { facingMode: "environment" },
-        target: document.querySelector("#scanner") // element
-      },
-      decoder: { readers: ["ean_reader","code_128_reader","upc_reader"] }
-    }, err => {
-      if (err) { console.error(err); return; }
-      Quagga.start();
-    });
+    let stream;
+    let interval;
 
-    Quagga.onDetected(data => {
-      const code = data.codeResult.code;
-      onDetected(code);
-      Quagga.stop();
-    });
+    const start = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" }
+        });
 
-    return () => {
-      try { Quagga.stop(); } catch (e) {}
-      Quagga.offDetected();
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+
+        interval = setInterval(scan, 300);
+      } catch (e) {
+        alert("Camera blocked");
+        onClose();
+      }
     };
+
+    const scan = () => {
+      if (!("BarcodeDetector" in window)) return;
+
+      const detector = new BarcodeDetector({
+        formats: ["qr_code", "code_128", "ean_8", "ean_13"]
+      });
+
+      const ctx = canvas.getContext("2d");
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      ctx.drawImage(videoRef.current, 0, 0);
+
+      detector.detect(canvas)
+        .then(results => {
+          if (results.length > 0) {
+            beep.play();
+            onDetected(results[0].rawValue);
+            stop();
+          }
+        });
+    };
+
+    const stop = () => {
+      clearInterval(interval);
+      stream?.getTracks().forEach(t => t.stop());
+    };
+
+    start();
+    return stop;
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-white p-4 rounded shadow">
-        <h3 className="text-lg font-semibold mb-2">Scan barcode</h3>
-        <div id="scanner" style={{ width: 320, height: 240 }} />
-        <div className="mt-3 flex gap-2">
-          <button onClick={onClose} className="px-3 py-1 bg-red-500 text-white rounded">Close</button>
-        </div>
-      </div>
+    <div className="fixed inset-0 bg-black text-white flex items-center justify-center z-50">
+      <video ref={videoRef} className="w-full h-full object-cover" />
+
+      <div className="absolute border-4 border-green-400 w-64 h-64 rounded-lg"></div>
+
+      <button
+        onClick={onClose}
+        className="absolute top-5 right-5 bg-red-600 px-4 py-2 rounded"
+      >
+        Close
+      </button>
     </div>
   );
 }
