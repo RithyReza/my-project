@@ -1,20 +1,16 @@
-import { useState } from "react";
-import { QrReader } from "react-qr-reader";
+import BarcodeScanner from "../components/BarcodeScanner";
 import { API_URL } from "../services/api";
-import beepSound from "../assets/beep.mp3";
+import { useState } from "react";
+import beep from "../assets/beep.mp3";
 
 export default function MobileOrderScan() {
   const [scanned, setScanned] = useState(false);
+  const sound = new Audio(beep);
 
-  const beep = new Audio(beepSound);
-
-  const handleDetected = async (result) => {
-    if (!result || scanned) return;
-
+  const onDetected = async (code) => {
+    if (scanned) return;
     setScanned(true);
-    beep.play();
-
-    const code = result?.text;
+    sound.play();
 
     await fetch(`${API_URL}/api/mobile/add-to-cart`, {
       method: "POST",
@@ -27,28 +23,16 @@ export default function MobileOrderScan() {
   };
 
   return (
-    <div className="w-full h-screen bg-black text-white flex flex-col items-center justify-center relative">
+    <div className="w-full h-screen bg-black text-white flex items-center justify-center relative">
 
-      {/* SCANNER */}
-      <div className="w-full h-full">
-        <QrReader
-          onResult={handleDetected}
-          constraints={{ facingMode: "environment" }}
-          containerStyle={{ width: "100%", height: "100%" }}
-          videoContainerStyle={{ width: "100%", height: "100%" }}
-        />
-      </div>
-
-      {/* SCAN FRAME */}
-      <div className="absolute border-4 border-white/80 w-64 h-64 rounded-lg pointer-events-none"></div>
-
-      <p className="absolute bottom-10 text-lg opacity-80">
-        Scanning… hold still
-      </p>
+      <BarcodeScanner
+        onDetected={onDetected}
+        onClose={() => history.back()}
+      />
 
       <button
         onClick={() => history.back()}
-        className="absolute top-5 right-5 bg-red-600 px-4 py-2 rounded text-white"
+        className="absolute top-5 right-5 bg-red-600 px-4 py-2 rounded"
       >
         Close
       </button>
