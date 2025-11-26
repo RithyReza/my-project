@@ -1,19 +1,12 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import BarcodeScanner from "../components/BarcodeScanner";
 import { API_URL } from "../services/api";
 
 export default function MobileOrderScan() {
-  const sound = useRef(new Audio("/beep.mp3"));
-  const lastScan = useRef(0);
+  const sound = new Audio("/beep.mp3");   // ✅ PUBLIC FILE
 
   const onDetected = async (code) => {
-    const now = Date.now();
-
-    // ✅ prevent double-read within 1 second
-    if (now - lastScan.current < 1000) return;
-    lastScan.current = now;
-
-    sound.current.play();
+    sound.play();
 
     await fetch(`${API_URL}/api/mobile/add-to-order`, {
       method: "POST",
@@ -21,8 +14,11 @@ export default function MobileOrderScan() {
       body: JSON.stringify({ barcode: code }),
     });
 
-    // ✅ no window.close()
-    // ✅ no stop scanning
+    // ✅ No window.close
+    // ✅ No setScanned(true)
+
+    // show small toast
+    alert("✅ Sent to POS!");
   };
 
   return (
