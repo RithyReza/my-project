@@ -19,9 +19,8 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
 
-// Mobile pages
+// Mobile Upload Page
 import MobileUpload from "./pages/MobileUpload";
-import MobileOrderScan from "./pages/MobileOrderScan";   // ✅ ADD THIS
 
 import { useAuth } from "./context/AuthContext";
 
@@ -41,7 +40,7 @@ function Layout() {
             {/* Everyone sees Dashboard */}
             <Route path="/" element={<Dashboard />} />
 
-            {/* STAFF ONLY */}
+            {/* ================= STAFF ONLY ================= */}
             {user?.role === "staff" && (
               <>
                 <Route path="/products" element={<Products />} />
@@ -50,7 +49,7 @@ function Layout() {
               </>
             )}
 
-            {/* ADMIN ONLY */}
+            {/* ================= ADMIN ONLY ================= */}
             {user?.role === "admin" && (
               <>
                 <Route path="/review" element={<Review />} />
@@ -75,13 +74,10 @@ export default function App() {
           {/* Login */}
           <Route path="/login" element={<Login />} />
 
-          {/* ✅ Mobile Upload */}
+          {/* Mobile Upload (phone scanner) */}
           <Route path="/mobile-upload" element={<MobileUpload />} />
 
-          {/* ✅ Mobile Order Scanner */}
-          <Route path="/mobile-order-scan" element={<MobileOrderScan />} />
-
-          {/* ✅ Everything else */}
+          {/* Everything else uses layout */}
           <Route path="/*" element={<Layout />} />
         </Routes>
       </BrowserRouter>
