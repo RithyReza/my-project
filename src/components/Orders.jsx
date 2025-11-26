@@ -85,9 +85,10 @@ export default function Orders() {
             <h3 className="text-lg font-bold mb-2">Scan with Phone</h3>
 
                 <QRCode
-                  value="https://my-project-vppx.onrender.com/mobile-order-scan"
-                  size={160}
+                    value="https://my-project-vppx.onrender.com/mobile-order-scan"
+                    size={160}
                 />
+
             <button
               onClick={() => setShowQR(false)}
               className="mt-3 px-3 py-1 bg-red-500 text-white rounded"
