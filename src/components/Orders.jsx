@@ -1,21 +1,21 @@
+// src/pages/Orders.jsx
 import { useCart } from "../context/CartContext";
 import { useState, useEffect } from "react";
 import { money } from "../utils/money";
 import QRCode from "react-qr-code";
 import { socket } from "../socket";
+import { API_URL } from "../services/api";
 
 export default function Orders() {
   const { orderItems, updateQty, removeItem, clearCart, addToCart } = useCart();
 
   const [cashGiven, setCashGiven] = useState("");
-
-  // ADDED
   const [showQR, setShowQR] = useState(false);
 
   const total = orderItems.reduce((s, i) => s + i.price * i.qty, 0);
   const change = Number(cashGiven || 0) - total;
 
-  // 🔥 Auto-receive scanned items from phone
+  // ✅ Auto receive scanned items from phone
   useEffect(() => {
     socket.on("cart:add", (product) => {
       addToCart({
@@ -26,13 +26,13 @@ export default function Orders() {
         qty: 1,
       });
 
-      // Close QR popup after first scan
       setShowQR(false);
     });
 
     return () => socket.off("cart:add");
   }, []);
 
+  // ✅ SAVE ORDER TO BACKEND (RENDER)
   const submitOrder = async () => {
     if (orderItems.length === 0) return alert("No items!");
 
@@ -44,7 +44,7 @@ export default function Orders() {
       change,
     };
 
-    const res = await fetch("http://localhost:5000/api/orders/save", {
+    const res = await fetch(`${API_URL}/api/orders/save`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -67,26 +67,25 @@ export default function Orders() {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Orders</h1>
 
-        {/* 📷 NEW BUTTON */}
         <button
           onClick={() => setShowQR(true)}
           className="px-3 py-1 bg-blue-600 text-white rounded transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+                      transition-transform duration-300 
+                      hover:scale-95 ease 
+                      active:scale-90 "
         >
           Scan Items 📷
         </button>
       </div>
 
-      {/* 📱 QR POPUP */}
+      {/* ✅ QR CODE POPUP */}
       {showQR && (
         <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
           <div className="bg-white p-5 rounded shadow text-center">
             <h3 className="text-lg font-bold mb-2">Scan with Phone</h3>
 
             <QRCode
-              value="http://172.20.10.2:5173/mobile-order-scan"
+              value="https://my-project-vppx.onrender.com/mobile-order-scan"
               size={160}
             />
 
@@ -100,7 +99,7 @@ export default function Orders() {
         </div>
       )}
 
-      {/* ORIGINAL TABLE — UNCHANGED */}
+      {/* TABLE */}
       <table className="w-full mb-4">
         <thead>
           <tr>
@@ -144,7 +143,7 @@ export default function Orders() {
       {/* TOTAL */}
       <div className="mb-3 font-bold text-lg">Total: {money(total)}</div>
 
-      {/* CASH */}
+      {/* CASH INPUT */}
       <div className="mb-2">
         <input
           placeholder="Cash given (៛)"
@@ -162,9 +161,9 @@ export default function Orders() {
       <button
         onClick={submitOrder}
         className="px-4 py-2 bg-green-600 text-white rounded transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+                    transition-transform duration-300 
+                    hover:scale-95 ease 
+                    active:scale-90 "
       >
         Submit Order
       </button>

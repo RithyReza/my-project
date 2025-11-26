@@ -1,5 +1,7 @@
+// src/pages/UploadProduct.jsx
 import { useState } from "react";
 import QRCode from "react-qr-code";
+import { API_URL } from "../services/api";
 
 export default function UploadProduct() {
   const [name, setName] = useState("");
@@ -10,7 +12,8 @@ export default function UploadProduct() {
   const [showQR, setShowQR] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const PHONE_URL = "http://192.168.1.51:5173/mobile-upload";
+  // ✅ Use your hosted frontend, NOT local IP
+  const PHONE_URL = "https://my-project-vppx.onrender.com/mobile-upload";
 
   const handleUpload = async () => {
     if (!name || !price) return alert("name and price required");
@@ -24,7 +27,8 @@ export default function UploadProduct() {
 
     setLoading(true);
 
-    const res = await fetch("http://localhost:5000/api/products/add", {
+    // ✅ use API_URL so it works online
+    const res = await fetch(`${API_URL}/api/products/add`, {
       method: "POST",
       body: form,
     });
@@ -32,9 +36,7 @@ export default function UploadProduct() {
     const data = await res.json();
     setLoading(false);
 
-    // ================================
-    // 🚨 DUPLICATE BARCODE DETECTED
-    // ================================
+    // ✅ Duplicate barcode check
     if (data.duplicate) {
       const exists = data.product;
 
@@ -43,15 +45,12 @@ export default function UploadProduct() {
           `⚠ This barcode already exists!\n\nProduct: ${exists.name}\nPrice: ${exists.price}៛\n\nDo you want to EDIT this product instead?`
         )
       ) {
-        // redirect to product page so user can edit
         window.location.href = `/products?edit=${exists._id}`;
       }
       return;
     }
 
-    // ================================
-    // SUCCESS UPLOAD
-    // ================================
+    // ✅ Success
     if (data.success) {
       alert("Product added!");
 
@@ -67,7 +66,6 @@ export default function UploadProduct() {
 
   return (
     <div className="p-4">
-
       {/* HEADER + QR BUTTON */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Upload Product</h1>
@@ -75,9 +73,9 @@ export default function UploadProduct() {
         <button
           onClick={() => setShowQR(true)}
           className="px-3 py-1 bg-blue-500 text-white rounded transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+                      transition-transform duration-300 
+                      hover:scale-95 ease 
+                      active:scale-90 "
         >
           📱 Phone Upload
         </button>
@@ -144,9 +142,9 @@ export default function UploadProduct() {
         onClick={handleUpload}
         disabled={loading}
         className="bg-green-600 text-white px-4 py-2 rounded transform 
-                            transition-transform duration-300 
-                            hover:scale-95 ease 
-                            active:scale-90 "
+                      transition-transform duration-300 
+                      hover:scale-95 ease 
+                      active:scale-90 "
       >
         {loading ? "Uploading..." : "Upload"}
       </button>
